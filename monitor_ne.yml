@@ -1,0 +1,31 @@
+# Neuinstallation  node_exporter
+
+- name: Ping the Servers
+  net_ping:
+
+- name: node_exporter directory loeschen
+  shell: rm -rf /opt/monitoring/node_exporter*
+  args:
+    warn: false
+
+- name: /opt/monitoring
+  file:
+    path: /opt/monitoring
+    state: directory
+    mode: 0777
+
+- name: node_exporter files holen
+  get_url:
+    url: https://github.com/prometheus/node_exporter/releases/download/v0.16.0/node_exporter-0.16.0.linux-amd64.tar.gz
+    dest: /opt/monitoring
+
+- name: node_exporter archive_file entpacken
+  unarchive:
+    remote_src: yes
+    src: /opt/monitoring/node_exporter-0.16.0.linux-amd64.tar.gz
+    dest: /opt/monitoring
+
+- name: node_exporter archive_file loeschen
+  file:
+    path: /opt/monitoring/node_exporter-0.16.0.linux-amd64.tar.gz
+    state: absent

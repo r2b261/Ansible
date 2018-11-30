@@ -1,0 +1,24 @@
+# konfigurationsaenderung logging_filebeat and config.yml von bitbucket holen und neu schreiben
+- name: ping the Servers
+  net_ping:
+
+- name: download logging_filebeat service script
+  get_url:
+    url: http://bitbucket.eg-factory.de:7990/projects/DO/repos/monitoring-clients/raw/configs/systemd/filebeat.service
+    headers:
+      Authorization: "Bearer OTM2MzY1MDY2NjM4Ok9RtK8kmbh+XMWm18pwTw4X4mYL"
+    dest: /etc/systemd/system
+
+- name: download logging_filebeat config script
+  get_url:
+    url: http://bitbucket.eg-factory.de:7990/projects/DO/repos/monitoring-clients/raw/configs/filebeat/{{ansible_hostname}}.yml
+    headers:
+      Authorization: "Bearer OTM2MzY1MDY2NjM4Ok9RtK8kmbh+XMWm18pwTw4X4mYL"
+    dest: /opt/logging/filebeat-6.3.0-linux-x86_64/filebeat.yml
+
+- name: logging_filebeat service restart
+  systemd:
+    state: restarted
+    enabled: yes
+    daemon_reload: yes
+    name: filebeat

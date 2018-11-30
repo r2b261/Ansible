@@ -1,0 +1,61 @@
+#!/usr/bin/ansible-playbook
+---
+# Aufrufplaybook für Monitoring
+- hosts: localhost
+  vars:
+    monitortasks:
+    
+  tasks:
+  - include: monitor_eax.yml
+    when: monitortask == "eax"
+
+  - include: monitor_eaxs.yml
+    when: monitortask == "eaxs"
+
+  - include: monitor_ex.yml
+    when: monitortask == "ex"
+
+  - include: monitor_exs.yml
+    when: monitortask == "exs"
+
+  - include: monitor_lof.yml
+    when: monitortask == "lof"
+
+  - include: monitor_lofs.yml
+    when: monitortask == "lofs"
+
+  - include: monitor_ne.yml
+    when: monitortask == "ne"
+
+  - include: monitor_nes.yml
+    when: monitortask == "nes"
+
+  - include: monitor_oe.yml
+    when: monitortask == "oe"
+
+  - include: monitor_oes.yml
+    when: monitortask == "oes"
+
+  - include: monitor_se.yml
+    when: monitortask == "se"
+
+  - include: monitor_ses.yml
+    when: monitortask == "ses"
+
+  - name: Es wurde keine Option angeben
+    debug:
+      msg:
+        - 'Waehlen sie eine Option!!'
+        - 'Beispiel -> monitor.yml -e monitortask=eax -K'
+        - 'eax -> elasticsearch_alerts_exporter neu installieren'
+        - 'eaxs -> elasticsearch_alerts_exporter service config neu'
+        - 'ex -> elasticsearch_exporter neu installieren'
+        - 'exs -> elasticsearch_exporter service config neu'
+        - 'lof -> logging filebeat neu installieren'
+        - 'lofs -> logging filebeat service config neu'
+        - 'ne -> node_exporter neu installieren'
+        - 'nes -> node_exporter service config neu'
+        - 'oe -> oracle_exporter neu installieren'
+        - 'oes -> oracle_exporter service config neu'
+        - 'se -> script_exporter neu installieren'
+        - 'ses -> script_exporter service config neu'

@@ -1,0 +1,21 @@
+#!/usr/bin/ansible-playbook
+---
+# prerequsite: user egfactory is enabled on remote machine, ansible_user in hosts file is egfactory
+# hosts must be changed to your needs
+- hosts: kevin
+  tasks:
+  - name: Ping the Servers
+    net_ping:
+
+  - name: Check or create directory .ssh
+    file:
+     path: /home/egfactory/.ssh
+     state: directory
+     owner: egfactory
+     group: egfactory
+     
+  - name: add public key to authorized_key file of egfactory for user rbeier
+    authorized_key: 
+      user: egfactory 
+      state: present 
+      key: "{{ lookup('file','/home/rbeier/.ssh/id_rsa.pub') }}"

@@ -1,0 +1,30 @@
+# Neuinstallation  elasticsearch_exporter 
+- name: Ping the Servers
+  net_ping:
+
+- name: elasticsearch_exporter directory loeschen
+  shell: rm -rf /opt/monitoring/elasticsearch_exporter*
+  args:
+    warn: false
+
+- name: /opt/monitoring
+  file:
+    path: /opt/monitoring
+    state: directory
+    mode: 0777
+
+- name: elasticsearch_exporter files holen
+  get_url:
+    url: https://github.com/justwatchcom/elasticsearch_exporter/releases/download/v1.0.3rc1/elasticsearch_exporter-1.0.3rc1.linux-amd64.tar.gz
+    dest: /opt/monitoring
+
+- name: elasticsearch_exporter archive_file entpacken
+  unarchive:
+    remote_src: yes
+    src: /opt/monitoring/elasticsearch_exporter-1.0.3rc1.linux-amd64.tar.gz
+    dest: /opt/monitoring
+
+- name: elasticsearch_exporter archive_file loeschen
+  file:
+    path: /opt/monitoring/elasticsearch_exporter-1.0.3rc1.linux-amd64.tar.gz
+    state: absent

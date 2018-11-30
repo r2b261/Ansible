@@ -1,0 +1,80 @@
+#!/usr/bin/ansible-playbook
+---
+# one sudo user with key must be in place to run this script on the hosts 
+# hosts must be filled with the correct name of the ansible host file
+- hosts: localhost
+  tasks:
+  - name: Ping the Servers
+    net_ping:
+
+  - name: Ensure group "devops" exists if not create
+    group:
+      name: devops
+      state: present
+      gid: 3333
+
+  - name: useradd cfroehlich if not exist
+    user:
+      name: cfroehlich
+      state: present
+      comment: devops user
+      uid: 3010
+      shell: /bin/bash
+      group: devops
+      update_password: on_create
+      password: $6$IjniZ8yxbLNQhp$d6R/Uu7xVnjHHrka9v3ei7Q1NgKdFIjhlrVgp96iyEmNidKQVbqBnhsGjUpOn1qGzKX/yXlapRVtXfnuryskB0
+
+  - name: useradd kmoegle if not exists
+    user:
+      name: kmoegle
+      state: present
+      comment: devops user
+      uid: 3011
+      shell: /bin/bash
+      group: devops
+      update_password: on_create
+      password: $6$IjniZ8yxbLNQhp$d6R/Uu7xVnjHHrka9v3ei7Q1NgKdFIjhlrVgp96iyEmNidKQVbqBnhsGjUpOn1qGzKX/yXlapRVtXfnuryskB0
+
+  - name: useradd dpasternak if not exists
+    user:
+      name: dpasternak
+      state: present
+      comment: devops user
+      uid: 3012
+      shell: /bin/bash
+      group: devops
+      update_password: on_create
+      password: $6$IjniZ8yxbLNQhp$d6R/Uu7xVnjHHrka9v3ei7Q1NgKdFIjhlrVgp96iyEmNidKQVbqBnhsGjUpOn1qGzKX/yXlapRVtXfnuryskB0
+
+  - name: useradd mvoigt if not exists
+    user:
+      name: mvoigt
+      state: present
+      comment: devops user
+      uid: 3013
+      shell: /bin/bash
+      group: devops
+      update_password: on_create
+      password: $6$IjniZ8yxbLNQhp$d6R/Uu7xVnjHHrka9v3ei7Q1NgKdFIjhlrVgp96iyEmNidKQVbqBnhsGjUpOn1qGzKX/yXlapRVtXfnuryskB0
+
+  - name: useradd rberger if not exists
+    user:
+      name: rberger
+      state: present
+      comment: devops user
+      uid: 3015
+      shell: /bin/bash
+      group: devops
+      update_password: on_create
+      password: $6$IjniZ8yxbLNQhp$d6R/Uu7xVnjHHrka9v3ei7Q1NgKdFIjhlrVgp96iyEmNidKQVbqBnhsGjUpOn1qGzKX/yXlapRVtXfnuryskB0
+
+  - name: password reset
+    shell: bash -c 'for u in cfroehlich kmoegle dpasternak mvoigt rberger; do passwd -e $u; done'
+
+  - name: change sudoers file
+    lineinfile:
+     path: /etc/sudoers
+     state: present
+     insertafter: "# Allow members of group sudo to execute any command"
+     regexp: '^%devops\s'
+     line: '%devops ALL=(ALL:ALL) ALL'

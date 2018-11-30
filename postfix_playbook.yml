@@ -1,0 +1,40 @@
+#!/usr/bin/ansible-playbook
+---
+- hosts: localhost
+  become : true
+  tasks:
+    - name: Install postfix mail server
+      apt:
+        pkg: postfix
+        state: present
+        update_cache: yes
+    - name: start postfix
+      systemd:
+        name: postfix
+        daemon_reload: yes
+        state: started
+        enabled: yes
+    - name: remove empty mailrelay line
+      lineinfile:
+        path: /etc/postfix/main.cf
+        line: "relayhost = "
+        state: absent
+    - name: Append relay config
+      lineinfile:
+        dest: /etc/postfix/main.cf
+        line: "{{ item }}"
+      with_items:
+        - transport_maps = hash:/etc/postfix/transport
+        - virtual_alias_maps = hash:/etc/postfix/virtual
+        - relayhost = sandra.extraholding.com
+      notify: "restart postfix"
+    - name: make sure postfix user owns postfix dir
+      file:
+        dest: /etc/postfix
+        owner: postfix
+  handlers:
+    - name: restart postfix
+      systemd:
+        name: postfix
+        daemon_reload: yes
+        state: restarted

@@ -1,0 +1,24 @@
+# konfigurationsaenderung elasticsearch_alerts_exporter.service and config.yml von bitbucket holen und neu schreiben
+- name: ping the Servers
+  net_ping:
+
+- name: download elasticsearch_alerts_exporter service script
+  get_url:
+    url: http://bitbucket.eg-factory.de:7990/projects/DO/repos/monitoring-clients/raw/configs/systemd/elasticsearch_alerts_exporter.service
+    headers:
+      Authorization: "Bearer OTM2MzY1MDY2NjM4Ok9RtK8kmbh+XMWm18pwTw4X4mYL"
+    dest: /etc/systemd/system
+
+- name: download elasticsearch_alerts_exporter config script
+  get_url:
+    url: http://bitbucket.eg-factory.de:7990/projects/DO/repos/monitoring-clients/raw/configs/elasticsearch_alerts_exporter/config.yml
+    headers:
+      Authorization: "Bearer OTM2MzY1MDY2NjM4Ok9RtK8kmbh+XMWm18pwTw4X4mYL"
+    dest: /opt/monitoring/elasticsearch_alerts_exporter
+
+- name: elasticsearch_alerts_exporter service restart
+  systemd:
+    state: restarted
+    enabled: yes
+    daemon_reload: yes
+    name: elasticsearch_alerts_exporter

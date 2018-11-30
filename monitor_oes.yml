@@ -1,0 +1,30 @@
+# konfigurationsaenderung oracle_exporter.service and config.yml von bitbucket holen und neu schreiben
+- name: ping the Servers
+  net_ping:
+
+- name: download oracle_exporter service script
+  get_url:
+    url: http://bitbucket.eg-factory.de:7990/projects/DO/repos/monitoring-clients/raw/configs/systemd/oracle_exporter.service
+    headers:
+      Authorization: "Bearer OTM2MzY1MDY2NjM4Ok9RtK8kmbh+XMWm18pwTw4X4mYL"
+    dest: /etc/systemd/system
+
+- name: download oracle_exporter config script
+  get_url:
+    url: http://bitbucket.eg-factory.de:7990/projects/DO/repos/monitoring-clients/raw/configs/oracle_exporter/{{ansible_hostname}}.conf
+    headers:
+      Authorization: "Bearer OTM2MzY1MDY2NjM4Ok9RtK8kmbh+XMWm18pwTw4X4mYL"
+    dest: /opt/monitoring/oracle_exporter/oracle.conf
+
+- name: access file anlegen
+  file: 
+    path: /opt/monitoring/oracle_exporter/access.conf
+    state: touch
+    mode: 0666
+
+- name: oracle_exporter service restart
+  systemd:
+    state: restarted
+    enabled: yes
+    daemon_reload: yes
+    name: oracle_exporter

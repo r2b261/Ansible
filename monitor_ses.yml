@@ -1,0 +1,42 @@
+# konfigurationsaenderung script_exporter and config.yml von bitbucket holen und neu schreiben
+- name: ping the Servers
+  net_ping:
+
+- name: download script_exporter service script
+  get_url:
+    url: http://bitbucket.eg-factory.de:7990/projects/DO/repos/monitoring-clients/raw/configs/systemd/script_exporter.service
+    headers:
+      Authorization: "Bearer OTM2MzY1MDY2NjM4Ok9RtK8kmbh+XMWm18pwTw4X4mYL"
+    dest: /etc/systemd/system
+
+- name: download script_exporter config script
+  get_url:
+    url: http://bitbucket.eg-factory.de:7990/projects/DO/repos/monitoring-clients/raw/configs/script_exporter/{{ansible_hostname}}.yaml
+    headers:
+      Authorization: "Bearer OTM2MzY1MDY2NjM4Ok9RtK8kmbh+XMWm18pwTw4X4mYL"
+    dest: /opt/monitoring/script_exporter/config.yaml
+
+- name: download script_exporter scripts
+  get_url:
+    url: http://bitbucket.eg-factory.de:7990/projects/DO/repos/monitoring-clients/raw/configs/script_exporter/scripts/{{item}}.sh
+    headers:
+      Authorization: "Bearer OTM2MzY1MDY2NjM4Ok9RtK8kmbh+XMWm18pwTw4X4mYL"
+    dest: /opt/monitoring/script_exporter
+    mode: u+x,g+x,o+x
+  with_items:
+    - crontab
+    - http
+    - java 
+    - ping
+    - prometheus-exporter-elasticsearch
+    - prometheus-exporter-elasticsearchalerts
+    - prometheus-exporter-node
+    - prometheus-exporter-oracle
+    - ssl
+
+- name: script_exporter service restart
+  systemd:
+    state: restarted
+    enabled: yes
+    daemon_reload: yes
+    name: script_exporter

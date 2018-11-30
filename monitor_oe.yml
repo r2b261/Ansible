@@ -1,0 +1,20 @@
+# Neuinstalltion oracle_exporter
+
+- name: Ping the Servers
+  net_ping:
+
+- name: oracle_exporter directory loeschen
+  file: 
+    path: /opt/monitoring/oracle_exporter
+    state: absent
+
+- name: oracle_exporter directory anlegen
+  file: 
+    path: /opt/monitoring/oracle_exporter
+    state: directory
+
+- name: oracle_exporter files holen
+  get_url:
+    url: https://github.com/freenetdigital/prometheus_oracle_exporter/releases/download/1.1.0/prometheus_oracle_exporter-amd64
+    dest: /opt/monitoring/oracle_exporter
+    mode: u+x,g+x,o+x

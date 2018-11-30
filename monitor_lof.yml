@@ -1,0 +1,42 @@
+# Neuinstallation logging_filebeat
+
+- name: Ping the Servers
+  net_ping:
+
+- name: logging_filebeat directory loeschen
+  file: 
+    path: /opt/logging/filebeat
+    state: absent
+
+- name: /opt/logging
+  file:
+    path: /opt/logging
+    state: directory
+    mode: 0777
+
+- name: logging_filebeat files holen
+  get_url:
+    url: https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-6.3.0-linux-x86_64.tar.gz
+    dest: /opt/logging
+    mode: u+x,g+x,o+x
+
+- name: logging_filebeat archive_file entpacken
+  unarchive:
+    remote_src: yes
+    src: /opt/logging/filebeat-6.3.0-linux-x86_64.tar.gz
+    dest: /opt/logging
+
+- name: logging_filebeat archive_file loeschen
+  file:
+    path: /opt/logging/filebeat-6.3.0-linux-x86_64.tar.gz
+    state: absent
+
+- name: logging_filebeat data directory anlegen
+  file: 
+    path: /opt/logging/filebeat/data
+    state: directory
+
+- name: logging_filebeat logs directory anlegen
+  file: 
+    path: /opt/logging/filebeat/logs
+    state: directory

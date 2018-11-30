@@ -1,0 +1,97 @@
+#!/usr/bin/ansible-playbook
+---
+# update the host and install additional packages,parameter hosts must be changed to you needs. 
+- hosts: localhost
+  tasks:
+  - name: Ping the Servers
+    net_ping:
+
+  - name: configure dpkg remove lock1
+    file:
+     path: /var/lib/apt/lists/lock
+     state: absent 
+
+  - name: configure dpkg remove lock2
+    file:
+     path: /var/cache/apt/archives/lock
+     state: absent 
+
+  - name: configure dpkg remove lock3
+    file:
+     path: /var/lib/dpkg/lock  
+     state: absent 
+
+  - name: configure dpkg
+    command: dpkg --configure -a
+    become: true
+
+  - name: Update and upgrade apt packages 
+    become: true
+    apt:
+      upgrade: safe
+      update_cache: yes
+      cache_valid_time: 3600
+      autoremove: yes
+      autoclean: yes
+    register: apt
+# if needed, you can have the output from the upgrade, enable the next line
+  - debug: msg={{ apt.stdout.split('\n')[:-1] }}
+
+  - name: install additional packages
+    apt: name={{ item }} update_cache=yes
+    with_items:
+      - acl
+      - bc 
+      - binutils
+      - bzip2
+      - curl
+      - diffutils
+      - dnsutils 
+      - fail2ban
+      - gawk
+      - git
+      - gnupg
+      - grep
+      - gzip
+      - htop
+      - iftop
+      - iptables
+      - logrotate
+      - logwatch
+      - lsof
+      - mailutils
+      - mawk
+      - mc 
+      - molly-guard
+      - mosh
+      - mutt
+      - ncdu
+      - ntp
+      - ntpdate
+      - openssh-blacklist
+      - openssh-blacklist-extra
+      - openssh-client
+      - procps
+      - psmisc
+      - quota
+      - rkhunter
+      - rsync
+      - screen
+      - sed
+      - snoopy
+      - ssh-askpass
+      - subversion
+      - sudo
+      - tar
+      - tcpdump
+      - traceroute
+      - tree
+      - unp
+      - unzip
+      - vim-common
+      - vim-tiny
+      - wget
+      - whois
+      - zip
+      - joe
+      - aptitude

@@ -1,0 +1,17 @@
+# konfigurationsaenderung elasticsearch_exporter.service von bitbucket holen und neu schreiben
+- name: ping the Servers
+  net_ping:
+
+- name: download elasticsearch_exporter service script
+  get_url:
+    url: http://bitbucket.eg-factory.de:7990/projects/DO/repos/monitoring-clients/raw/configs/systemd/elasticsearch_exporter.service
+    headers:
+      Authorization: "Bearer OTM2MzY1MDY2NjM4Ok9RtK8kmbh+XMWm18pwTw4X4mYL"
+    dest: /etc/systemd/system
+
+- name: elasticsearch_exporter service restart
+  systemd:
+    state: restarted
+    enabled: yes
+    daemon_reload: yes
+    name: elasticsearch_exporter
